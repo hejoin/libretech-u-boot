@@ -48,6 +48,9 @@
 #define CONFIG_SYS_LOAD_ADDR		CONFIG_SYS_TEXT_BASE
 #define CONFIG_SYS_BOOTM_LEN		(64 << 20) /* 64 MiB */
 
+#define CONFIG_SF_DEFAULT_SPEED		30000000
+#define CONFIG_SF_DEFAULT_MODE		SPI_MODE_0
+
 /* ROM USB boot support, auto-execute boot.scr at scriptaddr */
 #define BOOTENV_DEV_ROMUSB(devtypeu, devtypel, instance) \
 	"bootcmd_romusb=" \
