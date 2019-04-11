@@ -7,5 +7,6 @@
 #define __MESON_SM_H__
 
 ssize_t meson_sm_read_efuse(uintptr_t offset, void *buffer, size_t size);
+ssize_t meson_sm_get_chip_id(void *buffer);
 
 #endif /* __MESON_SM_H__ */

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
- * Configuration for LibreTech AC
+ * Configuration for LibreTech CC
  *
  * Copyright (C) 2017 Baylibre, SAS
  * Author: Neil Armstrong <narmstrong@baylibre.com>
@@ -16,17 +16,16 @@
 #define CONFIG_SPLASHIMAGE_GUARD
 #define CONFIG_SPLASH_SOURCE
 
-#define CONFIG_ENV_SECT_SIZE	0x10000
-#define CONFIG_ENV_OFFSET	(-0x10000)
-
 #ifndef BOOT_TARGET_DEVICES
 #define BOOT_TARGET_DEVICES(func) \
 	func(ROMUSB, romusb, na)  \
 	func(MMC, mmc, 0) \
+	func(MMC, mmc, 1) \
 	BOOT_TARGET_DEVICES_USB(func) \
 	func(PXE, pxe, na) \
 	func(DHCP, dhcp, na)
 #endif
+
 
 #ifndef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS \

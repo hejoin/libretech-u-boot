@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0+
+#
+# (C) Copyright 2019 Da Xue
+# Author: Da Xue <da@libre.computer>
+
+obj-y	:= aml-s905x-cc.o

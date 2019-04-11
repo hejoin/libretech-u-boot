@@ -9,6 +9,7 @@
 #include <dm.h>
 #include <led.h>
 #include <dm/uclass-internal.h>
+#include <linux/string.h>
 
 #define LED_TOGGLE LEDST_COUNT
 
@@ -85,7 +86,7 @@ int do_led(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	if (argc < 2)
 		return CMD_RET_USAGE;
 	led_label = argv[1];
-	if (*led_label == 'l')
+	if (strcmp(led_label, "list") == 0)
 		return list_leds();
 
 	cmd = argc > 2 ? get_led_cmd(argv[2]) : LEDST_COUNT;

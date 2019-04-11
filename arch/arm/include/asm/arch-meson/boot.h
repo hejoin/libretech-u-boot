@@ -16,5 +16,6 @@
 #define BOOT_DEVICE_USB         5
 
 int meson_get_boot_device(void);
+void meson_set_boot_source(void);
 
 #endif /* __MESON_BOOT_H__ */

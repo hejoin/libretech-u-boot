@@ -1,0 +1,6 @@
+AML-S805X-AC
+M:	Da Xue <da@libre.computer>
+S:	Maintained
+F:	board/libre-computer/aml-s805x-ac/
+F:	include/configs/libretech-ac.h
+F:	configs/libretech-ac_defconfig

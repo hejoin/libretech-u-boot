@@ -1,0 +1,6 @@
+AML-S905X-CC
+M:	Da Xue <da@libre.computer>
+S:	Maintained
+F:	board/libre-computer/aml-s905x-cc/
+F:	include/configs/libretech-cc.h
+F:	configs/libretech-cc_defconfig

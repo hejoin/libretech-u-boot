@@ -357,4 +357,8 @@ int board_run_command(const char *cmdline);
 	U_BOOT_CMDREP_COMPLETE(_name, CONFIG_SYS_MAXARGS, do_##_name,	\
 			       _usage, _help, complete_##_name)
 
+#ifdef CONFIG_CMD_INI
+extern int do_ini(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]);
+#endif
+
 #endif	/* __COMMAND_H */
