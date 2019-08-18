@@ -17,7 +17,7 @@
 #define CONFIG_SPLASH_SOURCE
 //#define CONFIG_MENU_SHOW
 #define CONFIG_MENUKEY 0x1b
-#define CONFIG_MENUPROMPT "Press ESC for menu. "
+#define CONFIG_MENUPROMPT "Press ESC for menu.   "
 
 #define CONFIG_ENV_SECT_SIZE	0x10000
 #define CONFIG_ENV_OFFSET	(-0x10000)
@@ -30,6 +30,13 @@
 	func(PXE, pxe, na) \
 	func(DHCP, dhcp, na)
 #endif
+
+#define PARTS_DEFAULT \
+	"name=esp,start=1M,size=255M,bootable,uuid=${uuid_gpt_esp};" \
+	"name=system,size=-,uuid=${uuid_gpt_system};"
+
+#define UUID_GPT_ESP "c12a7328-f81f-11d2-ba4b-00a0c93ec93b"
+#define UUID_GPT_SYSTEM "b921b045-1df0-41c3-af44-4c6f280d3fae"
 
 #ifndef CONFIG_EXTRA_ENV_SETTINGS
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -50,10 +57,14 @@
 	"bootmenu_2=Boot PXE=run bootcmd_pxe; echo \"PXE Boot failed.\"; sleep 5; $menucmd -1\0" \
 	"bootmenu_3=Boot DHCP=run bootcmd_dhcp; echo \"DHCP Boot failed.\"; sleep 5; $menucmd -1\0" \
 	"bootmenu_4=Embedded OS=echo \"Not Implemented.\"; sleep 5; $menucmd -1\0" \
-	"bootmenu_5=eMMC USB Drive Mode=mmc list; if mmc dev 0; then echo \"Press Control+C to end USB Drive Mode.\"; ums 0 mmc 0:0; echo \"USB Drive Mode ended.\"; else echo \"eMMC not detected.\"; fi; sleep 5; $menucmd -1\0" \
-	"bootmenu_6=Reboot=reset\0" \
+	"bootmenu_5=eMMC USB Drive Mode=mmc list; if mmc dev 0; then echo \"Press Control+C to end USB Drive mode.\"; ums 0 mmc 0:0; echo \"USB Drive mode ended.\"; else echo \"eMMC not detected.\"; fi; sleep 5; $menucmd -1\0" \
+	"bootmenu_6=fastboot USB Mode=echo \"Press Control+C to end fastboot mode.\"; fastboot usb 0; echo \"fastboot mode ended.\"; sleep 5; $menucmd -1\0" \
+	"bootmenu_7=Reboot=reset\0" \
 	"bootmenu_delay=30\0" \
 	"menucmd=bootmenu\0" \
+	"uuid_gpt_esp=" UUID_GPT_ESP "\0" \
+	"uuid_gpt_system=" UUID_GPT_SYSTEM "\0" \
+	"partitions=" PARTS_DEFAULT "\0" \
 	BOOTENV
 #endif
 

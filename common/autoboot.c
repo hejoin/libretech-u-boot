@@ -356,7 +356,7 @@ void autoboot_command(const char *s)
 	}
 
 #ifdef CONFIG_MENUKEY
-	printf("MENUKEY: %d\n", menukey);
+	if (menukey != 0) printf("Interrupt Key: %d\n", menukey);
 	if (menukey == CONFIG_MENUKEY) {
 		s = env_get("menucmd");
 		if (s)
