@@ -33,11 +33,6 @@ int misc_init_r(void)
 		       MESON_USE_INTERNAL_RMII_PHY);
 	
 	meson_set_boot_source();
-	
-	char * do_load_ini_argv[5] = { NULL, "mmc", env_get("bootdevice"), env_get("loadaddr"), "u-boot.ini" };
-	char * do_ini_argv[2] = { NULL, "" };
-	if (do_load(NULL, 0, 5, do_load_ini_argv,FS_TYPE_ANY) == 0)
-		do_ini(NULL, 0, 2, do_ini_argv);
 
 	char chip_id[12];
 	char mac_addr_rand[17];
@@ -47,11 +42,12 @@ int misc_init_r(void)
 					  mac_addr, EFUSE_MAC_SIZE);
 		if (len == EFUSE_MAC_SIZE && is_valid_ethaddr(mac_addr)){
 			eth_env_set_enetaddr("ethaddr", mac_addr);
+			printf("Net:   eth0 efuse MAC address: %s\n", mac_addr_rand);
 		} else {
 			meson_sm_get_chip_id(chip_id);
-			sprintf(mac_addr_rand,"18:66:C7:%02x:%02x:%02x",chip_id[9],chip_id[10],chip_id[11]);
+			sprintf(mac_addr_rand,"18:66:c7:%02x:%02x:%02x",chip_id[9],chip_id[10],chip_id[11]);
 			env_set("ethaddr", mac_addr_rand);
-			printf("using random mac address: %s\n", mac_addr_rand);
+			printf("Net:   eth0 chip_id MAC address: %s\n", mac_addr_rand);
 		}
 	}
 
@@ -77,24 +73,60 @@ int splash_screen_prepare(void)
 
 int meson_board_late_init(void)
 {
-        int x = 0, y = 0, ret;
 	
-	bmp_display((ulong)libre_computer_bmp_gz,BMP_ALIGN_CENTER, BMP_ALIGN_CENTER);
-
+	bmp_display((ulong)libre_computer_bmp_gz,BMP_ALIGN_CENTER, BMP_ALIGN_CENTER);	
+	
+#ifdef CONFIG_SPLASH_SCREEN
+        int x = 0, y = 0, ret;
         ret = splash_screen_prepare();
         if (ret == 0){
                 splash_get_pos(&x, &y);
         	char *env_splashimage_value = env_get("splashimage");
                 bmp_display(simple_strtoul(env_splashimage_value, 0, 16), x, y);
         }
+#endif
+
         return 0;
 }
 
-#if defined(CONFIG_OF_LIBFDT) && defined(CONFIG_OF_SYSTEM_SETUP)
-int ft_system_setup(void *blob, bd_t *bd)
+#if defined(CONFIG_LAST_STAGE_INIT)
+int last_stage_init(void)
+{
+	return 0;
+	
+}
+#endif
+
+#if defined(CONFIG_OF_LIBFDT)
+#if defined(CONFIG_OF_BOARD_SETUP)
+int meson_ft_board_setup(void *blob, bd_t *bd)
 {
 	int node_offset;
 	char * env_get_variable;
+	char * local_var;
+	char subsystem[4], subsystem_dev[2], subsystem_dev_subdev[4];
+
+	local_var = get_local_var("devtype");
+	if (local_var != NULL){
+		sprintf((char *) subsystem, "%s", local_var);
+		//printf("devtype: %s\n", (char *)subsystem);
+		local_var = get_local_var("devnum");
+		if (local_var != NULL){
+			sprintf((char *) subsystem_dev, "%s", local_var);
+			//printf("devnum: %s\n", (char *)subsystem_dev);
+			local_var = get_local_var("distro_bootpart");
+			if (local_var != NULL){
+				sprintf((char *) subsystem_dev_subdev, "%s:%s", subsystem_dev, local_var);
+				//printf("subsystem_dev_subdev %s\n", (char *) subsystem_dev_subdev);
+			}
+
+			char * do_load_ini_argv[5] = { NULL, subsystem, subsystem_dev_subdev, __stringify(CONFIG_SYS_LOAD_ADDR), "boot.ini" };
+			char * do_ini_argv[2] = { NULL, "" };
+			if (do_load(NULL, 0, 5, do_load_ini_argv,FS_TYPE_ANY) == 0)
+				if (do_ini(NULL, 0, 2, do_ini_argv) == 0)
+					printf("boot.ini: loaded\n");
+		}
+	}
 
 	env_get_variable = env_get("cvbs");
 	if (env_get_variable != NULL && strcmp(env_get_variable,"0") == 0){
@@ -129,3 +161,10 @@ int ft_system_setup(void *blob, bd_t *bd)
 	return 0;
 }
 #endif
+#if defined(CONFIG_OF_SYSTEM_SETUP)
+int ft_system_setup(void *blob, bd_t *bd){
+	return 0;
+}
+#endif
+#endif
+

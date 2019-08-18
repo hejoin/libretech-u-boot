@@ -15,6 +15,9 @@
 #define CONFIG_SYS_VIDEO_LOGO_MAX_SIZE (512*512*4)
 #define CONFIG_SPLASHIMAGE_GUARD
 #define CONFIG_SPLASH_SOURCE
+//#define CONFIG_MENU_SHOW
+#define CONFIG_MENUKEY 0x1b
+#define CONFIG_MENUPROMPT "Press ESC for menu. "
 
 #define CONFIG_ENV_SECT_SIZE	0x10000
 #define CONFIG_ENV_OFFSET	(-0x10000)
@@ -41,8 +44,17 @@
         "fdtfile=" CONFIG_DEFAULT_FDT_FILE "\0" \
         "splashimage=0x12000000\0" \
         "splashpos=m,m\0" \
-        "splashfile=u-boot.bmp\0" \
-        BOOTENV
+        "splashfile=boot.bmp\0" \
+	"bootmenu_0=Boot=boot; echo \"Boot failed.\"; sleep 30; $menucmd\0" \
+	"bootmenu_1=Boot USB=run bootcmd_usb0; echo \"USB Boot failed.\"; sleep 5; $menucmd -1\0" \
+	"bootmenu_2=Boot PXE=run bootcmd_pxe; echo \"PXE Boot failed.\"; sleep 5; $menucmd -1\0" \
+	"bootmenu_3=Boot DHCP=run bootcmd_dhcp; echo \"DHCP Boot failed.\"; sleep 5; $menucmd -1\0" \
+	"bootmenu_4=Embedded OS=echo \"Not Implemented.\"; sleep 5; $menucmd -1\0" \
+	"bootmenu_5=eMMC USB Drive Mode=mmc list; if mmc dev 0; then echo \"Press Control+C to end USB Drive Mode.\"; ums 0 mmc 0:0; echo \"USB Drive Mode ended.\"; else echo \"eMMC not detected.\"; fi; sleep 5; $menucmd -1\0" \
+	"bootmenu_6=Reboot=reset\0" \
+	"bootmenu_delay=30\0" \
+	"menucmd=bootmenu\0" \
+	BOOTENV
 #endif
 
 #include <configs/meson64.h>

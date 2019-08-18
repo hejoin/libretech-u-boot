@@ -69,41 +69,34 @@ void meson_board_add_reserved_memory(void *fdt, u64 start, u64 size)
 
 void meson_set_boot_source(void)
 {
-	const char *source,*device;
+	const char *source;
 
 	switch (meson_get_boot_device()) {
 	case BOOT_DEVICE_EMMC:
 		source = "emmc";
-		device = "1:auto";
 		break;
 
 	case BOOT_DEVICE_NAND:
 		source = "nand";
-		device = "";
 		break;
 
 	case BOOT_DEVICE_SPI:
 		source = "spi";
-		device = "";
 		break;
 
 	case BOOT_DEVICE_SD:
 		source = "sd";
-		device = "0:auto";
 		break;
 
 	case BOOT_DEVICE_USB:
 		source = "usb";
-		device = "";
 		break;
 
 	default:
 		source = "unknown";
-		device ="";
 	}
-
 	env_set("boot_source", source);
-	env_set("bootdevice", device);
+	printf("Boot:  %s\n",source);
 }
 
 __weak int meson_board_late_init(void)
