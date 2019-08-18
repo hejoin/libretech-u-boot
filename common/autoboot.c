@@ -223,9 +223,18 @@ static int __abortboot(int bootdelay)
 	 * Check if key already pressed
 	 */
 	if (tstc()) {	/* we got a key press	*/
-		(void) getc();  /* consume input	*/
+# ifdef CONFIG_MENUKEY
+		menukey = getc();
+		if (menukey == CONFIG_MENUKEY){
+			abort = 1;
+			bootdelay = 0;
+		}
+# else
+		(void) getc();  /* consume input	*/ 
+		abort = 1;
+# endif
 		puts("\b\b\b 0");
-		abort = 1;	/* don't auto boot	*/
+//		abort = 1;	/* don't auto boot	*/
 	}
 
 	while ((bootdelay > 0) && (!abort)) {
@@ -234,11 +243,16 @@ static int __abortboot(int bootdelay)
 		ts = get_timer(0);
 		do {
 			if (tstc()) {	/* we got a key press	*/
-				abort  = 1;	/* don't auto boot	*/
-				bootdelay = 0;	/* no more delay	*/
+//				abort  = 1;	/* don't auto boot	*/
 # ifdef CONFIG_MENUKEY
 				menukey = getc();
+				if (menukey == CONFIG_MENUKEY){
+					abort = 1;
+					bootdelay = 0;
+				}
 # else
+				abort = 1;
+				bootdelay = 0;	/* no more delay	*/
 				(void) getc();  /* consume input	*/
 # endif
 				break;
@@ -342,6 +356,7 @@ void autoboot_command(const char *s)
 	}
 
 #ifdef CONFIG_MENUKEY
+	printf("MENUKEY: %d\n", menukey);
 	if (menukey == CONFIG_MENUKEY) {
 		s = env_get("menucmd");
 		if (s)
