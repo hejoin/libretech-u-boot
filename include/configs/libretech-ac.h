@@ -49,19 +49,20 @@
         "pxefile_addr_r=0x01080000\0" \
         "ramdisk_addr_r=0x13000000\0" \
         "fdtfile=" CONFIG_DEFAULT_FDT_FILE "\0" \
-        "splashimage=0x12000000\0" \
+        "splashimage=0x11000000\0" \
         "splashpos=m,m\0" \
         "splashfile=boot.bmp\0" \
 	"bootmenu_0=Boot=boot; echo \"Boot failed.\"; sleep 30; $menucmd\0" \
 	"bootmenu_1=Boot USB=run bootcmd_usb0; echo \"USB Boot failed.\"; sleep 5; $menucmd -1\0" \
 	"bootmenu_2=Boot PXE=run bootcmd_pxe; echo \"PXE Boot failed.\"; sleep 5; $menucmd -1\0" \
 	"bootmenu_3=Boot DHCP=run bootcmd_dhcp; echo \"DHCP Boot failed.\"; sleep 5; $menucmd -1\0" \
-	"bootmenu_4=Embedded OS=echo \"Not Implemented.\"; sleep 5; $menucmd -1\0" \
+	"bootmenu_4=EtherealOS=run etherealos; sleep 5; $menucmd -1\0" \
 	"bootmenu_5=eMMC USB Drive Mode=mmc list; if mmc dev 0; then echo \"Press Control+C to end USB Drive mode.\"; ums 0 mmc 0:0; echo \"USB Drive mode ended.\"; else echo \"eMMC not detected.\"; fi; sleep 5; $menucmd -1\0" \
 	"bootmenu_6=fastboot USB Mode=echo \"Press Control+C to end fastboot mode.\"; fastboot usb 0; echo \"fastboot mode ended.\"; sleep 5; $menucmd -1\0" \
 	"bootmenu_7=Reboot=reset\0" \
 	"bootmenu_delay=30\0" \
 	"menucmd=bootmenu\0" \
+	"etherealos=sf probe; sf read $splashimage 200000 4; setexpr.l esrs *$splashimage \\\\& ffffffff; sf read $splashimage 200004 $esrs; bootm $splashimage\0" \
 	"uuid_gpt_esp=" UUID_GPT_ESP "\0" \
 	"uuid_gpt_system=" UUID_GPT_SYSTEM "\0" \
 	"partitions=" PARTS_DEFAULT "\0" \

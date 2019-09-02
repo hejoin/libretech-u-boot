@@ -104,6 +104,7 @@ int meson_ft_board_setup(void *blob, bd_t *bd)
 	int node_offset;
 	char * env_get_variable;
 	char * local_var;
+	const char * okay = "okay";
 	char subsystem[4], subsystem_dev[2], subsystem_dev_subdev[4];
 
 	local_var = get_local_var("devtype");
@@ -129,18 +130,18 @@ int meson_ft_board_setup(void *blob, bd_t *bd)
 	}
 
 	env_get_variable = env_get("cvbs");
-	if (env_get_variable != NULL && strcmp(env_get_variable,"0") == 0){
+	if (env_get_variable != NULL && strcmp(env_get_variable,"1") == 0){
 		node_offset = fdt_path_offset(blob, "/cvbs-connector");
 		if (node_offset < 0){
 			printf("cvbs: unable to find dt node\n");
 		} else {
-			if (fdt_del_node(blob, node_offset) == 0)
-				printf("cvbs: disabled\n");
+			if (fdt_setprop(blob, node_offset, "status", okay, strlen(okay) + 1) < 0)
+				printf("cvbs: failed to enable output\n");
 			else
-				printf("cvbs: failed to disable output\n");
+				printf("cvbs: enabled\n");
 		}
 	} else {
-		printf("cvbs: enabled\n");
+		printf("cvbs: disabled\n");
 	}
 
 	env_get_variable = env_get("efuse");
