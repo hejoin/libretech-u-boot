@@ -46,6 +46,7 @@ static void dwc3_phy_reset(struct dwc3 *dwc3_reg)
 
 	/* Clear USB2 PHY reset */
 	clrbits_le32(&dwc3_reg->g_usb2phycfg, DWC3_GUSB2PHYCFG_PHYSOFTRST);
+	clrbits_le32(&dwc3_reg->g_usb2phycfg, DWC3_GUSB2PHYCFG_SUSPHY);
 }
 
 void dwc3_core_soft_reset(struct dwc3 *dwc3_reg)
